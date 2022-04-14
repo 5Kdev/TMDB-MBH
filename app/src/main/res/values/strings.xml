@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MovieBrowser</string>
+    <string name="moviedb_v3_api_key">da39bde8a57792230d567a2b72143380</string>
+    <string name="moviedb_v4_api_key">eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkYTM5YmRlOGE1Nzc5MjIzMGQ1NjdhMmI3MjE0MzM4MCIsInN1YiI6IjVmYjAxOTBhNGE0YmZjMDA0MGI0ODEwYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.puZ2PmotZ9Y2pX4FIKyOYQVGUtct7NmY1Zqh6g_xReQ</string>
+</resources>

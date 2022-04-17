@@ -35,7 +35,7 @@ class MovieListAdapter(private val dataSet: MutableList<Movie> = arrayListOf(),p
             resource.data?.let {
                 dataSet.clear()
                 dataSet.addAll(it)
-                dataSet.sortByDescending { it.vote_average }
+                dataSet.sortBy { it.vote_average }
                 notifyDataSetChanged()
             }
     }
@@ -65,7 +65,12 @@ class MovieListAdapter(private val dataSet: MutableList<Movie> = arrayListOf(),p
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        viewHolder.title.text = dataSet[position].original_title
+        var title="Title isn't avaliable"
+
+        if(!dataSet[position].original_title.isNullOrBlank())  { title= dataSet[position].original_title.toString() }
+        if(!dataSet[position].title.isNullOrBlank()) { title= dataSet[position].title.toString() }
+
+        viewHolder.title.text = title
         viewHolder.cover.bindRemoteImage("https://image.tmdb.org/t/p/w342"+dataSet[position].coverUrl)
 
 
@@ -78,7 +83,7 @@ class MovieListAdapter(private val dataSet: MutableList<Movie> = arrayListOf(),p
         }
         viewHolder.rating.progress = (dataSet[position].vote_average*10).toInt()
 
-        viewHolder.title.setOnClickListener {
+        viewHolder.container.setOnClickListener {
             onItemClick?.invoke(dataSet[position])
         }
     }

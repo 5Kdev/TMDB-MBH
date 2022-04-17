@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.dev.adnetworkm.CheckNetworkStatus
 import com.mbh.moviebrowser.MainActivity
 import com.mbh.moviebrowser.R
@@ -30,7 +33,7 @@ class MovieDetailsFragment : DaggerFragment(){
     private val viewModel by lazy {
         var movieId = (activity as MainActivity).selectedMovie
         Log.d("movieId","movieId: "+movieId)
-        ViewModelProvider(this, MovieDetailsViewModel.Factory(movieId,movieRepository)).get(MovieDetailsViewModel::class.java)
+        ViewModelProvider(this, MovieDetailsViewModel.Factory(movieId,movieRepository,requireActivity())).get(MovieDetailsViewModel::class.java)
     }
 
     protected inline fun <reified T : ViewDataBinding> binding(
@@ -38,6 +41,7 @@ class MovieDetailsFragment : DaggerFragment(){
         @LayoutRes resId: Int,
         container: ViewGroup?
     ): T = DataBindingUtil.inflate(inflater, resId, container, false)
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,6 +54,7 @@ class MovieDetailsFragment : DaggerFragment(){
                 var title:TextView = this.title
                 var description: TextView = this.description
                 var cover:ImageView = this.cover
+
                 viewModel = this@MovieDetailsFragment.viewModel.apply {
                     CheckNetworkStatus.getNetworkLiveData(requireActivity().applicationContext).observe(viewLifecycleOwner, Observer { t ->
                         when (t) {
@@ -57,14 +62,20 @@ class MovieDetailsFragment : DaggerFragment(){
                                 viewModel!!.loadDetail().observe(viewLifecycleOwner, Observer { t ->
                                     title.text=t.title
                                     description.text=t.overview
-                                    cover.bindRemoteImage("https://image.tmdb.org/t/p/original/"+t.posterPath)
+
+                                    if(t.posterPath==null){
+                                        cover.setImageResource(R.drawable.sample_poster)
+                                    }
+                                    else{
+                                        cover.bindRemoteImage("https://image.tmdb.org/t/p/original/"+t.posterPath)
+                                    }
                                 })
                             }
                             false -> {
-                                Toast.makeText(requireActivity().applicationContext, "No Network Connection", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireActivity().applicationContext, "No Network Connection", Toast.LENGTH_LONG).show()
                             }
                             null -> {
-                                // TODO: Handle the connection...
+
                             }
                         }
                     })
@@ -73,8 +84,5 @@ class MovieDetailsFragment : DaggerFragment(){
             }.root
     }
 
-    fun loadDetailsData() {
-
-    }
 
 }
